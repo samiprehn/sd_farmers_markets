@@ -179,9 +179,9 @@
 
             const tabBtn = (tab, label, date, extra = '') =>
                 `<button onclick="setTab('${tab}')"
-                    class="flex-1 py-1.5 px-2 text-sm font-semibold transition-colors ${extra} ${selectedTab === tab ? 'bg-green-700 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}">
+                    class="flex-1 py-1.5 px-2 text-sm font-semibold transition-colors ${extra} ${selectedTab === tab ? 'bg-gray-900 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}">
                     <div>${label}</div>
-                    <div class="text-xs font-normal ${selectedTab === tab ? 'text-green-100' : 'text-gray-500'}">${date}</div>
+                    <div class="text-xs font-normal ${selectedTab === tab ? 'text-gray-300' : 'text-gray-500'}">${date}</div>
                 </button>`;
 
             const todayDate = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
