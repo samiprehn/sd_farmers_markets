@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SD Farmers Markets</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥦</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        * { font-family: 'DM Sans', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const MARKETS = [
+            // Tuesday (2)
+            { name: 'Pacific Beach', day: 2, hours: '2–6pm', address: '4500 Bayard St', neighborhood: 'Pacific Beach' },
+            { name: 'Coronado', day: 2, hours: '2:30–6pm', address: '1201 First St at B Ave', neighborhood: 'Coronado' },
+            { name: 'Mira Mesa', day: 2, hours: '3–6pm', address: '10510 Reagan Rd', neighborhood: 'Mira Mesa', note: 'Closed in January' },
+            // Wednesday (3)
+            { name: 'Little Italy', day: 3, hours: '9:30am–1:30pm', address: '501 W Date St', neighborhood: 'Little Italy' },
+            { name: 'Ocean Beach', day: 3, hours: '4–8pm (Apr–Sep) / 4–7pm (Oct–Mar)', address: '4900 Newport Ave', neighborhood: 'Ocean Beach' },
+            // Thursday (4)
+            { name: 'North Park', day: 4, hours: '3–7:30pm', address: '2900 North Park Way', neighborhood: 'North Park' },
+            { name: 'Linda Vista', day: 4, hours: '1–6pm', address: '6939 Linda Vista Rd', neighborhood: 'Linda Vista' },
+            { name: 'Scripps Ranch', day: 4, hours: '3–7pm', address: '10045 Carroll Canyon Rd', neighborhood: 'Scripps Ranch' },
+            { name: 'Santee', day: 4, hours: '3–7pm (3–6pm winter)', address: '9600 Carlton Hills Blvd', neighborhood: 'Santee' },
+            // Friday (5)
+            { name: 'La Mesa', day: 5, hours: '3–7pm', address: 'La Mesa Blvd', neighborhood: 'La Mesa' },
+            // Saturday (6)
+            { name: 'Little Italy Mercato', day: 6, hours: '8am–2pm', address: 'W Date St', neighborhood: 'Little Italy' },
+            { name: 'City Heights', day: 6, hours: '9am–1pm', address: 'Wightman St (btw Fairmount & 43rd)', neighborhood: 'City Heights' },
+            { name: 'Point Loma', day: 6, hours: '10am–1pm', address: '2306 Cushing Rd, Liberty Station', neighborhood: 'Point Loma' },
+            // Sunday (0)
+            { name: 'Hillcrest', day: 0, hours: '8am–2pm', address: '3960 Normal St', neighborhood: 'Hillcrest' },
+            { name: 'La Jolla Open Aire', day: 0, hours: '9am–1pm', address: '7300 Girard Ave', neighborhood: 'La Jolla' },
+        ];
+
+        const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        function getNextDayOfWeek(dayOfWeek) {
+            const today = new Date();
+            const todayDay = today.getDay();
+            let daysToAdd = dayOfWeek - todayDay;
+            if (daysToAdd <= 0) daysToAdd += 7;
+            const target = new Date(today);
+            target.setDate(today.getDate() + daysToAdd);
+            return target;
+        }
+
+        let selectedTab = 'today';
+
+        function setTab(tab) {
+            selectedTab = tab;
+            render();
+        }
+
+        function mapsUrl(address) {
+            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address + ', San Diego, CA')}`;
+        }
+
+        function renderMarkets(dayOfWeek) {
+            const markets = MARKETS.filter(m => m.day === dayOfWeek);
+            if (!markets.length) {
+                return `<div class="text-white/60 text-center py-8">No farmers markets today.</div>`;
+            }
+            return markets.map(m => `
+                <div class="bg-white rounded-xl shadow-md p-4 mb-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-bold text-gray-900 text-lg">${m.name}</div>
+                            <div class="text-green-700 text-sm font-medium">${m.neighborhood}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-gray-700 font-semibold text-sm">${m.hours}</div>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between">
+                        <a href="${mapsUrl(m.address)}" target="_blank" rel="noopener noreferrer"
+                           class="text-sm text-blue-600 hover:underline">${m.address}</a>
+                        ${m.note ? `<span class="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">${m.note}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render() {
+            const today = new Date();
+            const todayDay = today.getDay();
+            const isSaturday = todayDay === 6;
+            const nextSaturday = getNextDayOfWeek(6);
+            const nextSunday = getNextDayOfWeek(0);
+
+            const tabBtn = (tab, label, date, extra = '') =>
+                `<button onclick="setTab('${tab}')"
+                    class="flex-1 py-1.5 px-2 text-sm font-semibold transition-colors ${extra} ${selectedTab === tab ? 'bg-green-700 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}">
+                    <div>${label}</div>
+                    <div class="text-xs font-normal ${selectedTab === tab ? 'text-green-100' : 'text-gray-500'}">${date}</div>
+                </button>`;
+
+            const todayLabel = DAY_NAMES[todayDay];
+            const todayDate = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const satDate = nextSaturday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const sunDate = nextSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+            let displayDay;
+            if (selectedTab === 'today') displayDay = todayDay;
+            else if (selectedTab === 'saturday') displayDay = 6;
+            else displayDay = 0;
+
+            document.getElementById('app').innerHTML = `
+                <div class="min-h-screen bg-gradient-to-br from-green-700 via-green-600 to-emerald-500 p-3">
+                    <div class="max-w-lg mx-auto">
+                        <div class="text-center mb-3 pt-2">
+                            <h1 class="text-2xl font-bold text-white drop-shadow">San Diego Farmers Markets 🥦</h1>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-3">
+                            <div class="flex">
+                                ${tabBtn('today', todayLabel, todayDate)}
+                                ${!isSaturday ? tabBtn('saturday', 'Saturday', satDate, 'border-l border-r border-gray-200') : ''}
+                                ${tabBtn('sunday', 'Sunday', sunDate, isSaturday ? 'border-l border-gray-200' : '')}
+                            </div>
+                        </div>
+
+                        ${renderMarkets(displayDay)}
+
+                        <p class="text-center text-white/40 text-xs mt-6 pb-4">Hours subject to change — verify before visiting</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        render();
+    </script>
+</body>
+</html>
