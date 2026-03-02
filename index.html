@@ -21,54 +21,91 @@
 
         const MARKETS = [
             // Monday (1)
-            { name: 'Welk Resort', day: 1, hours: '3–7pm', address: '8860 Lawrence Welk Dr', neighborhood: 'Escondido', region: 'North County', openHours: { open: 15, close: 19 } },
+            { name: 'Welk Resort', day: 1, hours: '3–7pm', address: '8860 Lawrence Welk Dr', neighborhood: 'Escondido', region: 'North County', zip: '92026', openHours: { open: 15, close: 19 } },
 
             // Tuesday (2)
-            { name: 'Pacific Beach', day: 2, hours: '2–6pm', address: '4500 Bayard St', neighborhood: 'Pacific Beach', region: 'Central', openHours: { open: 14, close: 18 }, dogFriendly: true },
-            { name: 'Mira Mesa', day: 2, hours: '3–6pm', address: '10510 Reagan Rd', neighborhood: 'Mira Mesa', region: 'Central', openHours: { open: 15, close: 18 }, note: 'Closed in January' },
-            { name: 'Coronado', day: 2, hours: '2:30–6pm', address: '1201 First St at B Ave', neighborhood: 'Coronado', region: 'South Bay', openHours: { open: 14.5, close: 18 } },
-            { name: 'Otay Ranch', day: 2, hours: '4–7pm', address: '2015 Birch Rd', neighborhood: 'Chula Vista', region: 'South Bay', openHours: { open: 16, close: 19 } },
-            { name: 'Escondido', day: 2, hours: '2:30pm–sunset', address: '262 E Grand Ave at Juniper', neighborhood: 'Escondido', region: 'North County', openHours: { open: 14.5, close: 19 } },
-            { name: 'San Marcos', day: 2, hours: '3–6pm (fall/winter) / 3–7pm (spring/summer)', address: '251 N City Dr', neighborhood: 'San Marcos', region: 'North County', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
+            { name: 'Pacific Beach', day: 2, hours: '2–6pm', address: '4500 Bayard St', neighborhood: 'Pacific Beach', region: 'Central', zip: '92109', openHours: { open: 14, close: 18 }, dogFriendly: true },
+            { name: 'Mira Mesa', day: 2, hours: '3–6pm', address: '10510 Reagan Rd', neighborhood: 'Mira Mesa', region: 'Central', zip: '92126', openHours: { open: 15, close: 18 }, note: 'Closed in January' },
+            { name: 'Coronado', day: 2, hours: '2:30–6pm', address: '1201 First St at B Ave', neighborhood: 'Coronado', region: 'South Bay', zip: '92118', openHours: { open: 14.5, close: 18 } },
+            { name: 'Otay Ranch', day: 2, hours: '4–7pm', address: '2015 Birch Rd', neighborhood: 'Chula Vista', region: 'South Bay', zip: '91915', openHours: { open: 16, close: 19 } },
+            { name: 'Escondido', day: 2, hours: '2:30pm–sunset', address: '262 E Grand Ave at Juniper', neighborhood: 'Escondido', region: 'North County', zip: '92025', openHours: { open: 14.5, close: 19 } },
+            { name: 'San Marcos', day: 2, hours: '3–6pm (fall/winter) / 3–7pm (spring/summer)', address: '251 N City Dr', neighborhood: 'San Marcos', region: 'North County', zip: '92078', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
 
             // Wednesday (3)
-            { name: 'Little Italy', day: 3, hours: '9:30am–1:30pm', address: '501 W Date St', neighborhood: 'Little Italy', region: 'Central', openHours: { open: 9.5, close: 13.5 }, dogFriendly: true, parking: 'Paid garages nearby; street fills fast' },
-            { name: 'Ocean Beach', day: 3, hours: '4–8pm (Apr–Sep) / 4–7pm (Oct–Mar)', address: '4900 Newport Ave', neighborhood: 'Ocean Beach', region: 'Central', openHours: [{ months: WINTER, open: 16, close: 19 }, { months: SUMMER, open: 16, close: 20 }], dogFriendly: true, parking: 'Street parking on Newport Ave, can fill up' },
-            { name: 'South Bay', day: 3, hours: '3–7pm (3–6pm winter)', address: '4475 Bonita Rd', neighborhood: 'Bonita', region: 'South Bay', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
-            { name: 'Carlsbad', day: 3, hours: '3–7pm (3–6pm winter)', address: 'State St & Carlsbad Village Dr', neighborhood: 'Carlsbad', region: 'North County', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }], dogFriendly: true },
+            { name: 'Little Italy', day: 3, hours: '9:30am–1:30pm', address: '501 W Date St', neighborhood: 'Little Italy', region: 'Central', zip: '92101', openHours: { open: 9.5, close: 13.5 }, dogFriendly: true, parking: 'Paid garages nearby; street fills fast' },
+            { name: 'Ocean Beach', day: 3, hours: '4–8pm (Apr–Sep) / 4–7pm (Oct–Mar)', address: '4900 Newport Ave', neighborhood: 'Ocean Beach', region: 'Central', zip: '92107', openHours: [{ months: WINTER, open: 16, close: 19 }, { months: SUMMER, open: 16, close: 20 }], dogFriendly: true, parking: 'Street parking on Newport Ave, can fill up' },
+            { name: 'South Bay', day: 3, hours: '3–7pm (3–6pm winter)', address: '4475 Bonita Rd', neighborhood: 'Bonita', region: 'South Bay', zip: '91902', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
+            { name: 'Carlsbad', day: 3, hours: '3–7pm (3–6pm winter)', address: 'State St & Carlsbad Village Dr', neighborhood: 'Carlsbad', region: 'North County', zip: '92008', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }], dogFriendly: true },
 
             // Thursday (4)
-            { name: 'North Park', day: 4, hours: '3–6pm', address: '2900 North Park Way', neighborhood: 'North Park', region: 'Central', openHours: { open: 15, close: 18 }, dogFriendly: true, parking: 'Street parking on surrounding blocks' },
-            { name: 'Linda Vista', day: 4, hours: '1–6pm', address: '6939 Linda Vista Rd', neighborhood: 'Linda Vista', region: 'Central', openHours: { open: 13, close: 18 } },
-            { name: 'Santee', day: 4, hours: '3–7pm (3–6pm winter)', address: '9600 Carlton Hills Blvd', neighborhood: 'Santee', region: 'East County', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
-            { name: 'Scripps Ranch', day: 4, hours: '3–7pm', address: '10045 Carroll Canyon Rd', neighborhood: 'Scripps Ranch', region: 'East County', openHours: { open: 15, close: 19 } },
-            { name: 'Oceanside', day: 4, hours: '9am–1pm', address: 'Pier View Way & Coast Hwy 101', neighborhood: 'Oceanside', region: 'North County', openHours: { open: 9, close: 13 }, dogFriendly: true },
+            { name: 'North Park', day: 4, hours: '3–6pm', address: '2900 North Park Way', neighborhood: 'North Park', region: 'Central', zip: '92104', openHours: { open: 15, close: 18 }, dogFriendly: true, parking: 'Street parking on surrounding blocks' },
+            { name: 'Linda Vista', day: 4, hours: '1–6pm', address: '6939 Linda Vista Rd', neighborhood: 'Linda Vista', region: 'Central', zip: '92111', openHours: { open: 13, close: 18 } },
+            { name: 'Santee', day: 4, hours: '3–7pm (3–6pm winter)', address: '9600 Carlton Hills Blvd', neighborhood: 'Santee', region: 'East County', zip: '92071', openHours: [{ months: WINTER, open: 15, close: 18 }, { months: SUMMER, open: 15, close: 19 }] },
+            { name: 'Scripps Ranch', day: 4, hours: '3–7pm', address: '10045 Carroll Canyon Rd', neighborhood: 'Scripps Ranch', region: 'East County', zip: '92131', openHours: { open: 15, close: 19 } },
+            { name: 'Oceanside', day: 4, hours: '9am–1pm', address: 'Pier View Way & Coast Hwy 101', neighborhood: 'Oceanside', region: 'North County', zip: '92054', openHours: { open: 9, close: 13 }, dogFriendly: true },
 
             // Friday (5)
-            { name: 'La Mesa', day: 5, hours: '3–7pm', address: 'La Mesa Blvd btw Palm & Allison', neighborhood: 'La Mesa', region: 'East County', openHours: { open: 15, close: 19 } },
-            { name: 'Rancho Bernardo', day: 5, hours: '9am–1pm', address: '13330 Paseo Del Verano Norte', neighborhood: 'Rancho Bernardo', region: 'North County', openHours: { open: 9, close: 13 } },
-            { name: 'Imperial Beach', day: 5, hours: '2–6pm', address: '10 Evergreen Ave', neighborhood: 'Imperial Beach', region: 'South Bay', openHours: { open: 14, close: 18 }, dogFriendly: true },
-            { name: 'Borrego Springs', day: 5, hours: '7am–12pm (Nov–Apr) / 7–10am (May–Oct)', address: '700 Palm Canyon Dr', neighborhood: 'Borrego Springs', region: 'East County', openHours: [{ months: [11,12,1,2,3,4], open: 7, close: 12 }, { months: [5,6,7,8,9,10], open: 7, close: 10 }] },
+            { name: 'La Mesa', day: 5, hours: '3–7pm', address: 'La Mesa Blvd btw Palm & Allison', neighborhood: 'La Mesa', region: 'East County', zip: '91942', openHours: { open: 15, close: 19 } },
+            { name: 'Rancho Bernardo', day: 5, hours: '9am–1pm', address: '13330 Paseo Del Verano Norte', neighborhood: 'Rancho Bernardo', region: 'North County', zip: '92128', openHours: { open: 9, close: 13 } },
+            { name: 'Imperial Beach', day: 5, hours: '2–6pm', address: '10 Evergreen Ave', neighborhood: 'Imperial Beach', region: 'South Bay', zip: '91932', openHours: { open: 14, close: 18 }, dogFriendly: true },
+            { name: 'Borrego Springs', day: 5, hours: '7am–12pm (Nov–Apr) / 7–10am (May–Oct)', address: '700 Palm Canyon Dr', neighborhood: 'Borrego Springs', region: 'East County', zip: '92004', openHours: [{ months: [11,12,1,2,3,4], open: 7, close: 12 }, { months: [5,6,7,8,9,10], open: 7, close: 10 }] },
 
             // Saturday (6)
-            { name: 'Little Italy Mercato', day: 6, hours: '8am–2pm', address: 'W Date St', neighborhood: 'Little Italy', region: 'Central', openHours: { open: 8, close: 14 }, dogFriendly: true, parking: 'Paid garages nearby; street fills very fast' },
-            { name: 'City Heights', day: 6, hours: '9am–1pm', address: 'Wightman St (btw Fairmount & 43rd)', neighborhood: 'City Heights', region: 'Central', openHours: { open: 9, close: 13 } },
-            { name: 'Point Loma', day: 6, hours: '10am–1pm', address: '2306 Cushing Rd, Liberty Station', neighborhood: 'Point Loma', region: 'Central', openHours: { open: 10, close: 13 }, dogFriendly: true, parking: 'Ample free parking at Liberty Station' },
-            { name: 'Poway', day: 6, hours: '8am–1pm', address: '14134 Midland Rd', neighborhood: 'Poway', region: 'North County', openHours: { open: 8, close: 13 } },
-            { name: 'Rancho Peñasquitos', day: 6, hours: '9am–1pm', address: '9400 Fairgrove Lane', neighborhood: 'Rancho Peñasquitos', region: 'North County', openHours: { open: 9, close: 13 } },
-            { name: 'Del Mar', day: 6, hours: '1–4pm', address: '1050 Camino Del Mar', neighborhood: 'Del Mar', region: 'North County', openHours: { open: 13, close: 16 }, dogFriendly: true, parking: 'Limited street parking on Camino Del Mar' },
-            { name: 'Vista', day: 6, hours: '8am–12pm', address: '325 S Melrose Dr', neighborhood: 'Vista', region: 'North County', openHours: { open: 8, close: 12 } },
-            { name: 'Fallbrook', day: 6, hours: '9am–1:30pm', address: 'Main Ave btw Hawthorne & Fig', neighborhood: 'Fallbrook', region: 'North County', openHours: { open: 9, close: 13.5 } },
+            { name: 'Little Italy Mercato', day: 6, hours: '8am–2pm', address: 'W Date St', neighborhood: 'Little Italy', region: 'Central', zip: '92101', openHours: { open: 8, close: 14 }, dogFriendly: true, parking: 'Paid garages nearby; street fills very fast' },
+            { name: 'City Heights', day: 6, hours: '9am–1pm', address: 'Wightman St (btw Fairmount & 43rd)', neighborhood: 'City Heights', region: 'Central', zip: '92125', openHours: { open: 9, close: 13 } },
+            { name: 'Point Loma', day: 6, hours: '10am–1pm', address: '2306 Cushing Rd, Liberty Station', neighborhood: 'Point Loma', region: 'Central', zip: '92107', openHours: { open: 10, close: 13 }, dogFriendly: true, parking: 'Ample free parking at Liberty Station' },
+            { name: 'Poway', day: 6, hours: '8am–1pm', address: '14134 Midland Rd', neighborhood: 'Poway', region: 'North County', zip: '92074', openHours: { open: 8, close: 13 } },
+            { name: 'Rancho Peñasquitos', day: 6, hours: '9am–1pm', address: '9400 Fairgrove Lane', neighborhood: 'Rancho Peñasquitos', region: 'North County', zip: '92129', openHours: { open: 9, close: 13 } },
+            { name: 'Del Mar', day: 6, hours: '1–4pm', address: '1050 Camino Del Mar', neighborhood: 'Del Mar', region: 'North County', zip: '92014', openHours: { open: 13, close: 16 }, dogFriendly: true, parking: 'Limited street parking on Camino Del Mar' },
+            { name: 'Vista', day: 6, hours: '8am–12pm', address: '325 S Melrose Dr', neighborhood: 'Vista', region: 'North County', zip: '92081', openHours: { open: 8, close: 12 } },
+            { name: 'Fallbrook', day: 6, hours: '9am–1:30pm', address: 'Main Ave btw Hawthorne & Fig', neighborhood: 'Fallbrook', region: 'North County', zip: '92028', openHours: { open: 9, close: 13.5 } },
 
             // Sunday (0)
-            { name: 'Hillcrest', day: 0, hours: '8am–2pm', address: '3960 Normal St', neighborhood: 'Hillcrest', region: 'Central', openHours: { open: 8, close: 14 }, dogFriendly: true, parking: 'Street parking nearby or DMV lot on Normal St' },
-            { name: 'La Jolla Open Aire', day: 0, hours: '9am–1pm', address: '7300 Girard Ave', neighborhood: 'La Jolla', region: 'Central', openHours: { open: 9, close: 13 }, dogFriendly: true, parking: 'Street parking competitive, arrive early' },
-            { name: 'Chula Vista', day: 0, hours: '10am–2pm', address: '300 Park Way', neighborhood: 'Chula Vista', region: 'South Bay', openHours: { open: 10, close: 14 } },
-            { name: 'Leucadia', day: 0, hours: '10am–2pm', address: '185 Union St', neighborhood: 'Encinitas', region: 'North County', openHours: { open: 10, close: 14 }, dogFriendly: true },
-            { name: 'Solana Beach', day: 0, hours: '12–4pm', address: '410 S Cedros Ave', neighborhood: 'Solana Beach', region: 'North County', openHours: { open: 12, close: 16 }, dogFriendly: true },
-            { name: 'Rancho Santa Fe', day: 0, hours: '9:30am–2pm', address: '16079 San Dieguito Rd', neighborhood: 'Rancho Santa Fe', region: 'North County', openHours: { open: 9.5, close: 14 } },
-            { name: 'Santa Ysabel', day: 0, hours: '10am–6pm', address: '21887 Washington St', neighborhood: 'Santa Ysabel', region: 'East County', openHours: { open: 10, close: 18 } },
+            { name: 'Hillcrest', day: 0, hours: '8am–2pm', address: '3960 Normal St', neighborhood: 'Hillcrest', region: 'Central', zip: '92103', openHours: { open: 8, close: 14 }, dogFriendly: true, parking: 'Street parking nearby or DMV lot on Normal St' },
+            { name: 'La Jolla Open Aire', day: 0, hours: '9am–1pm', address: '7300 Girard Ave', neighborhood: 'La Jolla', region: 'Central', zip: '92037', openHours: { open: 9, close: 13 }, dogFriendly: true, parking: 'Street parking competitive, arrive early' },
+            { name: 'Chula Vista', day: 0, hours: '10am–2pm', address: '300 Park Way', neighborhood: 'Chula Vista', region: 'South Bay', zip: '91910', openHours: { open: 10, close: 14 } },
+            { name: 'Leucadia', day: 0, hours: '10am–2pm', address: '185 Union St', neighborhood: 'Encinitas', region: 'North County', zip: '92024', openHours: { open: 10, close: 14 }, dogFriendly: true },
+            { name: 'Solana Beach', day: 0, hours: '12–4pm', address: '410 S Cedros Ave', neighborhood: 'Solana Beach', region: 'North County', zip: '92075', openHours: { open: 12, close: 16 }, dogFriendly: true },
+            { name: 'Rancho Santa Fe', day: 0, hours: '9:30am–2pm', address: '16079 San Dieguito Rd', neighborhood: 'Rancho Santa Fe', region: 'North County', zip: '92091', openHours: { open: 9.5, close: 14 } },
+            { name: 'Santa Ysabel', day: 0, hours: '10am–6pm', address: '21887 Washington St', neighborhood: 'Santa Ysabel', region: 'East County', zip: '92070', openHours: { open: 10, close: 18 } },
         ];
+
+        // lat/lon center point per zip code
+        const ZIP_COORDS = {
+            '92026': [33.167, -117.014], // Welk Resort / N Escondido
+            '92109': [32.793, -117.234], // Pacific Beach
+            '92126': [32.913, -117.144], // Mira Mesa
+            '92118': [32.686, -117.183], // Coronado
+            '91915': [32.615, -116.950], // Otay Ranch / Chula Vista
+            '92025': [33.119, -117.086], // Escondido downtown
+            '92078': [33.143, -117.166], // San Marcos
+            '92101': [32.721, -117.169], // Little Italy / Downtown
+            '92107': [32.748, -117.250], // Ocean Beach
+            '91902': [32.660, -117.016], // Bonita
+            '92008': [33.157, -117.347], // Carlsbad
+            '92104': [32.747, -117.130], // North Park
+            '92111': [32.771, -117.163], // Linda Vista
+            '92071': [32.838, -116.974], // Santee
+            '92131': [32.883, -117.093], // Scripps Ranch
+            '92054': [33.196, -117.380], // Oceanside
+            '91942': [32.768, -117.023], // La Mesa
+            '92128': [32.999, -117.061], // Rancho Bernardo
+            '91932': [32.583, -117.113], // Imperial Beach
+            '92004': [33.256, -116.375], // Borrego Springs
+            '92125': [32.810, -117.094], // City Heights (Tierrasanta area)
+            '92074': [32.963, -117.036], // Poway
+            '92129': [32.952, -117.115], // Rancho Peñasquitos
+            '92014': [32.959, -117.265], // Del Mar
+            '92081': [33.183, -117.215], // Vista
+            '92028': [33.373, -117.251], // Fallbrook
+            '92103': [32.747, -117.164], // Hillcrest
+            '92037': [32.833, -117.271], // La Jolla
+            '91910': [32.640, -117.084], // Chula Vista downtown
+            '92024': [33.062, -117.297], // Encinitas / Leucadia
+            '92075': [32.990, -117.271], // Solana Beach
+            '92091': [33.008, -117.207], // Rancho Santa Fe
+            '92070': [33.108, -116.680], // Santa Ysabel
+        };
 
         const IN_SEASON = {
             1:  ['Navel oranges 🍊', 'Mandarins', 'Grapefruits', 'Blood oranges', 'Lemons 🍋', 'Avocados 🥑', 'Broccoli 🥦', 'Cabbage', 'Carrots 🥕', 'Kale 🥬', 'Chard', 'Lettuce', 'Arugula', 'Beets', 'Radishes', 'Dandelion greens', 'Winter squash', 'Fresh herbs 🌿'],
@@ -115,6 +152,92 @@
         }
 
         let selectedTab = 'today';
+        const weatherCache = {}; // zip → hourly data
+
+        async function fetchWeather() {
+            const zips = [...new Set(MARKETS.map(m => m.zip))];
+            await Promise.all(zips.map(async zip => {
+                const coords = ZIP_COORDS[zip];
+                if (!coords) return;
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&hourly=apparent_temperature,weather_code,uv_index&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=7`);
+                    const data = await res.json();
+                    weatherCache[zip] = data.hourly;
+                } catch (e) {}
+            }));
+            render();
+        }
+
+        function getApparentTemp(market, date) {
+            const hourly = weatherCache[market.zip];
+            if (!hourly) return null;
+            const oh = getOpenHours(market, date);
+            if (!oh) return null;
+            const midHour = Math.round((oh.open + oh.close) / 2);
+            const y = date.getFullYear();
+            const mo = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const h = String(midHour).padStart(2, '0');
+            const timeStr = `${y}-${mo}-${d}T${h}:00`;
+            const idx = hourly.time.indexOf(timeStr);
+            if (idx === -1) return null;
+            return Math.round(hourly.apparent_temperature[idx]);
+        }
+
+        function weatherCodeEmoji(code) {
+            if (code === 0)                    return '☀️';
+            if (code === 1)                    return '🌤️';
+            if (code === 2)                    return '⛅';
+            if (code === 3)                    return '☁️';
+            if (code <= 48)                    return '🌫️'; // fog
+            if (code <= 55)                    return '🌦️'; // drizzle
+            if (code <= 65)                    return '🌧️'; // rain
+            if (code <= 77)                    return '🌨️'; // snow
+            if (code === 80)                   return '🌦️'; // light showers
+            if (code <= 82)                    return '🌧️'; // showers
+            if (code <= 86)                    return '🌨️'; // snow showers
+            return '⛈️';                              // thunderstorm
+        }
+
+        function getUVIndex(market, date) {
+            const hourly = weatherCache[market.zip];
+            if (!hourly) return null;
+            const oh = getOpenHours(market, date);
+            if (!oh) return null;
+            const midHour = Math.round((oh.open + oh.close) / 2);
+            const y = date.getFullYear();
+            const mo = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const h = String(midHour).padStart(2, '0');
+            const timeStr = `${y}-${mo}-${d}T${h}:00`;
+            const idx = hourly.time.indexOf(timeStr);
+            if (idx === -1) return null;
+            return Math.round(hourly.uv_index[idx]);
+        }
+
+        function uvLabel(uv) {
+            if (uv <= 2)  return { label: 'Low',       color: '#16a34a' };
+            if (uv <= 5)  return { label: 'Moderate',  color: '#ca8a04' };
+            if (uv <= 7)  return { label: 'High',      color: '#ea580c' };
+            if (uv <= 10) return { label: 'Very High', color: '#dc2626' };
+            return             { label: 'Extreme',    color: '#9333ea' };
+        }
+
+        function getWeatherCode(market, date) {
+            const hourly = weatherCache[market.zip];
+            if (!hourly) return null;
+            const oh = getOpenHours(market, date);
+            if (!oh) return null;
+            const midHour = Math.round((oh.open + oh.close) / 2);
+            const y = date.getFullYear();
+            const mo = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const h = String(midHour).padStart(2, '0');
+            const timeStr = `${y}-${mo}-${d}T${h}:00`;
+            const idx = hourly.time.indexOf(timeStr);
+            if (idx === -1) return null;
+            return hourly.weather_code[idx];
+        }
 
         function setTab(tab) {
             selectedTab = tab;
@@ -125,8 +248,13 @@
             return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address + ', San Diego, CA')}`;
         }
 
-        function renderMarketCard(m, showOpenNow) {
+        function renderMarketCard(m, showOpenNow, date) {
             const open = showOpenNow && isOpenNow(m);
+            const feelsLike = getApparentTemp(m, date);
+            const wCode = getWeatherCode(m, date);
+            const wEmoji = wCode !== null ? weatherCodeEmoji(wCode) : '';
+            const uv = getUVIndex(m, date);
+            const uvInfo = uv !== null ? uvLabel(uv) : null;
             return `
                 <div class="bg-white rounded-xl shadow-md p-4 mb-3 ${open ? 'ring-2 ring-green-500' : ''}">
                     <div class="flex justify-between items-start">
@@ -140,6 +268,9 @@
                         </div>
                         <div class="text-right shrink-0 ml-2">
                             <div class="text-gray-700 font-semibold text-sm">${m.hours}</div>
+                            ${feelsLike !== null ? `<div class="text-gray-400 text-xs mt-0.5">Feels like ${feelsLike}°F</div>` : ''}
+                            ${wEmoji ? `<div class="text-xl mt-0.5">${wEmoji}</div>` : ''}
+                            ${uvInfo ? `<div class="text-xs mt-0.5 font-medium" style="color:${uvInfo.color}">UV ${uv}</div>` : ''}
                         </div>
                     </div>
                     <div class="mt-2">
@@ -151,7 +282,7 @@
                 </div>`;
         }
 
-        function renderMarkets(dayOfWeek, showOpenNow) {
+        function renderMarkets(dayOfWeek, showOpenNow, date) {
             const markets = MARKETS.filter(m => m.day === dayOfWeek);
             if (!markets.length) {
                 return `<div class="text-white/60 text-center py-8">No farmers markets today.</div>`;
@@ -162,7 +293,7 @@
                 if (!group.length) return '';
                 return `
                     <div class="text-white/70 text-xs font-semibold uppercase tracking-wider mb-2 mt-4 first:mt-0">${region}</div>
-                    ${group.map(m => renderMarketCard(m, showOpenNow)).join('')}
+                    ${group.map(m => renderMarketCard(m, showOpenNow, date)).join('')}
                 `;
             }).join('');
         }
@@ -188,10 +319,10 @@
             const satDate = nextSaturday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const sunDate = nextSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-            let displayDay;
-            if (selectedTab === 'today') displayDay = todayDay;
-            else if (selectedTab === 'saturday') displayDay = 6;
-            else displayDay = 0;
+            let displayDay, displayDate;
+            if (selectedTab === 'today') { displayDay = todayDay; displayDate = today; }
+            else if (selectedTab === 'saturday') { displayDay = 6; displayDate = nextSaturday; }
+            else { displayDay = 0; displayDate = nextSunday; }
 
             const showOpenNow = selectedTab === 'today';
 
@@ -222,7 +353,7 @@
                             </div>
                         </div>
 
-                        ${renderMarkets(displayDay, showOpenNow)}
+                        ${renderMarkets(displayDay, showOpenNow, displayDate)}
 
                         <div class="text-center text-white/30 text-xs mt-6 pb-4">
                             <a href="https://www.locallywell.com/farmers-markets-in-san-diego/" target="_blank" rel="noopener noreferrer" class="hover:text-white/60 underline">LocallyWell</a>
@@ -235,6 +366,7 @@
         }
 
         render();
+        fetchWeather();
     </script>
 </body>
 </html>
