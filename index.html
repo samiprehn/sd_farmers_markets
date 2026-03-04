@@ -25,7 +25,7 @@
 
             // Tuesday (2)
             { name: 'Pacific Beach', day: 2, hours: '2–6pm', address: '4500 Bayard St', neighborhood: 'Pacific Beach', region: 'Central', zip: '92109', openHours: { open: 14, close: 18 }, dogFriendly: true },
-            { name: 'Mira Mesa', day: 2, hours: '3–6pm', address: '10510 Reagan Rd', neighborhood: 'Mira Mesa', region: 'Central', zip: '92126', openHours: { open: 15, close: 18 }, note: 'Closed in January' },
+            { name: 'Mira Mesa', day: 2, hours: '3–6pm', address: '10510 Reagan Rd', neighborhood: 'Mira Mesa', region: 'Central', zip: '92126', openHours: { open: 15, close: 18 }, closedMonths: [1] },
             { name: 'Coronado', day: 2, hours: '2:30–6pm', address: '1201 First St at B Ave', neighborhood: 'Coronado', region: 'South Bay', zip: '92118', openHours: { open: 14.5, close: 18 } },
             { name: 'Otay Ranch', day: 2, hours: '4–7pm', address: '2015 Birch Rd', neighborhood: 'Chula Vista', region: 'South Bay', zip: '91915', openHours: { open: 16, close: 19 } },
             { name: 'Escondido', day: 2, hours: '2:30pm–sunset', address: '262 E Grand Ave at Juniper', neighborhood: 'Escondido', region: 'North County', zip: '92025', openHours: { open: 14.5, close: 19 } },
@@ -281,7 +281,8 @@
         }
 
         function renderMarkets(dayOfWeek, showOpenNow, date) {
-            const markets = MARKETS.filter(m => m.day === dayOfWeek);
+            const month = date.getMonth() + 1;
+            const markets = MARKETS.filter(m => m.day === dayOfWeek && (!m.closedMonths || !m.closedMonths.includes(month)));
             if (!markets.length) {
                 return `<div class="text-white/60 text-center py-8">No farmers markets today.</div>`;
             }
