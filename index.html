@@ -269,11 +269,13 @@
                         <div class="text-green-700 text-sm font-medium">${m.neighborhood}</div>
                         ${feelsLike !== null ? `<div class="text-gray-400 text-xs shrink-0 ml-2">Feels like ${feelsLike}°F</div>` : ''}
                     </div>
-                    ${wEmoji ? `<div class="text-right text-xl mt-0.5">${wEmoji}</div>` : ''}
-                    <div class="flex justify-between items-center mt-0.5">
+                    <div class="flex justify-between items-center mt-1">
                         <a href="${mapsUrl(m.address)}" target="_blank" rel="noopener noreferrer"
                            class="text-sm text-blue-600 hover:underline">${m.address}</a>
-                        ${uvInfo ? `<div class="text-xs font-medium shrink-0 ml-2" style="color:${uvInfo.color}">UV ${uv}</div>` : ''}
+                        <div class="flex items-center gap-1.5 shrink-0 ml-2">
+                            ${wEmoji ? `<span class="text-lg">${wEmoji}</span>` : ''}
+                            ${uvInfo ? `<span class="text-xs font-medium" style="color:${uvInfo.color}">UV ${uv}</span>` : ''}
+                        </div>
                     </div>
                     ${m.parking ? `<div class="text-xs text-gray-400 mt-1">🅿️ ${m.parking}</div>` : ''}
                     ${m.note ? `<div class="text-xs text-amber-600 mt-1">⚠️ ${m.note}</div>` : ''}
