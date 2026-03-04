@@ -258,27 +258,25 @@
             return `
                 <div class="bg-white rounded-xl shadow-md p-4 mb-3 ${open ? 'ring-2 ring-green-500' : ''}">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-gray-900 text-lg">${m.name}</span>
-                                ${open ? '<span class="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">● Open now</span>' : ''}
-                                ${m.dogFriendly ? '<span title="Dog friendly" class="text-base cursor-help">🐾</span>' : ''}
-                            </div>
-                            <div class="text-green-700 text-sm font-medium">${m.neighborhood}</div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-gray-900 text-lg">${m.name}</span>
+                            ${open ? '<span class="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">● Open now</span>' : ''}
+                            ${m.dogFriendly ? '<span title="Dog friendly" class="text-base cursor-help">🐾</span>' : ''}
                         </div>
-                        <div class="text-right shrink-0 ml-2">
-                            <div class="text-gray-700 font-semibold text-sm">${m.hours}</div>
-                            ${feelsLike !== null ? `<div class="text-gray-400 text-xs mt-0.5">Feels like ${feelsLike}°F</div>` : ''}
-                            ${wEmoji ? `<div class="text-xl mt-0.5">${wEmoji}</div>` : ''}
-                            ${uvInfo ? `<div class="text-xs mt-0.5 font-medium" style="color:${uvInfo.color}">UV ${uv}</div>` : ''}
-                        </div>
+                        <div class="text-gray-700 font-semibold text-sm shrink-0 ml-2">${m.hours}</div>
                     </div>
-                    <div class="mt-2">
+                    <div class="flex justify-between items-baseline mt-1">
+                        <div class="text-green-700 text-sm font-medium">${m.neighborhood}</div>
+                        ${feelsLike !== null ? `<div class="text-gray-400 text-xs shrink-0 ml-2">Feels like ${feelsLike}°F</div>` : ''}
+                    </div>
+                    ${wEmoji ? `<div class="text-right text-xl mt-0.5">${wEmoji}</div>` : ''}
+                    <div class="flex justify-between items-center mt-0.5">
                         <a href="${mapsUrl(m.address)}" target="_blank" rel="noopener noreferrer"
                            class="text-sm text-blue-600 hover:underline">${m.address}</a>
-                        ${m.parking ? `<div class="text-xs text-gray-400 mt-1">🅿️ ${m.parking}</div>` : ''}
-                        ${m.note ? `<div class="text-xs text-amber-600 mt-1">⚠️ ${m.note}</div>` : ''}
+                        ${uvInfo ? `<div class="text-xs font-medium shrink-0 ml-2" style="color:${uvInfo.color}">UV ${uv}</div>` : ''}
                     </div>
+                    ${m.parking ? `<div class="text-xs text-gray-400 mt-1">🅿️ ${m.parking}</div>` : ''}
+                    ${m.note ? `<div class="text-xs text-amber-600 mt-1">⚠️ ${m.note}</div>` : ''}
                 </div>`;
         }
 
