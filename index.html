@@ -9,7 +9,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
         * { font-family: 'DM Sans', sans-serif; }
-        body { background: #22c55e; }
+        body { background: linear-gradient(135deg, #1d9e50, #22c55e); min-height: 100vh; }
     </style>
 </head>
 <body>
@@ -347,7 +347,7 @@
             const satBorder = !isSunday ? 'border-l border-r border-gray-200' : 'border-l border-gray-200';
 
             document.getElementById('app').innerHTML = `
-                <div class="min-h-screen p-3" style="background: linear-gradient(135deg, #1d9e50, #22c55e)">
+                <div class="p-3">
                     <div class="max-w-lg mx-auto">
                         <div class="text-center mb-3 pt-2">
                             <h1 class="text-xl font-bold text-white drop-shadow">🧺 San Diego Farmers Markets</h1>
@@ -372,11 +372,6 @@
 
                         ${renderMarkets(displayDay, showOpenNow, displayDate)}
 
-                        <div class="text-center text-white/30 text-xs mt-6 pb-4">
-                            <a href="https://www.locallywell.com/farmers-markets-in-san-diego/" target="_blank" rel="noopener noreferrer" class="hover:text-white/60 underline">LocallyWell</a>
-                            · <a href="https://sandiegomagazine.com/food-drink/farmers-markets-san-diego/" target="_blank" rel="noopener noreferrer" class="hover:text-white/60 underline">San Diego Magazine</a>
-                            · <a href="https://www.bewiseranch.com/harvestschedule.htm" target="_blank" rel="noopener noreferrer" class="hover:text-white/60 underline">Be Wise Ranch</a>
-                        </div>
                     </div>
                 </div>
             `;
@@ -385,6 +380,6 @@
         render();
         fetchWeather();
     </script>
-  <a href="https://buymeacoffee.com/samiprehn" target="_blank" rel="noopener noreferrer" class="block text-center mt-8 mb-4 text-white/30 text-sm hover:text-white/60 transition-colors" style="text-decoration: none;">Keep this page running</a>
+  <a href="https://buymeacoffee.com/samiprehn" target="_blank" rel="noopener noreferrer" class="block text-center mt-3 mb-4 text-white/30 text-sm hover:text-white/60 transition-colors" style="text-decoration: none;">Keep this page running</a>
 </body>
 </html>
