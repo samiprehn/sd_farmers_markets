@@ -9,10 +9,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
         * { font-family: 'DM Sans', sans-serif; }
-        body { background: linear-gradient(135deg, #1d9e50, #22c55e); min-height: 100vh; }
+        body { background: linear-gradient(135deg, #1d9e50, #22c55e); min-height: 100vh; position: relative; }
+        #produce-bg {
+            position: fixed; inset: 0; pointer-events: none;
+            z-index: 0; overflow: hidden;
+        }
+        .produce {
+            position: absolute;
+            user-select: none;
+            opacity: 0.85;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+        }
+        #app { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
+    <div id="produce-bg"></div>
     <div id="app"></div>
     <script>
         // openHours: { open, close } in 24h decimal, or array for seasonal:
@@ -122,6 +134,78 @@
             11: ['Mandarins', 'Satsumas', 'Pomegranates', 'Persimmons', 'Apples 🍎', 'Pears 🍐', 'Avocados 🥑', 'Broccoli 🥦', 'Cabbage', 'Carrots 🥕', 'Celery', 'Chard', 'Kale 🥬', 'Lettuce', 'Arugula', 'Beets', 'Radishes', 'Dandelion greens', 'Cucumbers 🥒', 'Summer squash', 'Tomatoes 🍅', 'Winter squash', 'Sweet potatoes 🍠', 'Brussels sprouts', 'Leeks', 'Fennel', 'Fresh herbs 🌿'],
             12: ['Navel oranges 🍊', 'Mandarins', 'Satsumas', 'Grapefruits', 'Lemons 🍋', 'Avocados 🥑', 'Pomegranates (late)', 'Persimmons', 'Broccoli 🥦', 'Cabbage', 'Carrots 🥕', 'Celery', 'Chard', 'Kale 🥬', 'Lettuce', 'Arugula', 'Beets', 'Radishes', 'Summer squash', 'Tomatoes 🍅', 'Winter squash', 'Brussels sprouts', 'Cauliflower', 'Fennel', 'Leeks', 'Parsnips', 'Fresh herbs 🌿'],
         };
+
+        // Detect whether the browser actually renders an emoji as a color glyph
+        // (vs. a tofu box). Draws the emoji in solid black; supported color
+        // emojis ignore the fillStyle and paint with their own colors.
+        function isEmojiSupported(emoji) {
+            if (!isEmojiSupported._canvas) {
+                isEmojiSupported._canvas = document.createElement('canvas');
+                isEmojiSupported._canvas.width = 32;
+                isEmojiSupported._canvas.height = 32;
+            }
+            const ctx = isEmojiSupported._canvas.getContext('2d');
+            ctx.clearRect(0, 0, 32, 32);
+            ctx.font = '24px sans-serif';
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#000000';
+            ctx.fillText(emoji, 0, 0);
+            const data = ctx.getImageData(0, 0, 32, 32).data;
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] === 0) continue;
+                if (data[i] > 5 || data[i + 1] > 5 || data[i + 2] > 5) return true;
+            }
+            return false;
+        }
+
+        // Background sprinkle: pull only the emojis from this month's IN_SEASON list,
+        // dedupe, drop any that don't render as color, and scatter them randomly
+        // across the page (no overlaps).
+        (function () {
+            const month = new Date().getMonth() + 1;
+            const items = IN_SEASON[month] || [];
+            const emojiRegex = /\p{Extended_Pictographic}/gu;
+            const found = [];
+            for (const item of items) {
+                const matches = item.match(emojiRegex);
+                if (matches) found.push(...matches);
+            }
+            const inSeason = [...new Set(found)].filter(isEmojiSupported);
+            if (!inSeason.length) return;
+
+            const container = document.getElementById('produce-bg');
+            if (!container) return;
+            const w = window.innerWidth;
+            const h = Math.max(window.innerHeight, document.documentElement.scrollHeight, 1200);
+            const target = 60;
+            const placed = [];
+            const buffer = 10;
+            let made = 0;
+            for (let attempt = 0; attempt < target * 6 && made < target; attempt++) {
+                const sizeRem = 1.4 + Math.random() * 2.6;
+                const r = sizeRem * 16 * 0.55;
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                let overlap = false;
+                for (const p of placed) {
+                    const dx = x - p.x, dy = y - p.y;
+                    const minDist = r + p.r + buffer;
+                    if (dx * dx + dy * dy < minDist * minDist) { overlap = true; break; }
+                }
+                if (overlap) continue;
+                placed.push({ x, y, r });
+                const span = document.createElement('span');
+                span.className = 'produce';
+                span.textContent = inSeason[Math.floor(Math.random() * inSeason.length)];
+                span.style.fontSize = sizeRem + 'rem';
+                span.style.left = (x / w * 100).toFixed(2) + 'vw';
+                span.style.top = y.toFixed(0) + 'px';
+                span.style.transform = `rotate(${(Math.random() * 60 - 30).toFixed(0)}deg)`;
+                span.style.opacity = (0.7 + Math.random() * 0.3).toFixed(2);
+                container.appendChild(span);
+                made++;
+            }
+        })();
 
         const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -357,7 +441,10 @@
                         <div class="bg-white/20 rounded-xl p-3 mb-3 text-white">
                             <div class="text-xs font-semibold uppercase tracking-wider text-white/70 mb-1.5">In season now</div>
                             <div class="flex flex-wrap gap-1.5">
-                                ${inSeason.map(item => `<span class="bg-white text-gray-700 text-xs px-2 py-0.5 rounded-full">${item}</span>`).join('')}
+                                ${inSeason.map(item => {
+                                    const clean = item.replace(/\p{Extended_Pictographic}/gu, e => isEmojiSupported(e) ? e : '').replace(/\s+$/, '');
+                                    return `<span class="bg-white text-gray-700 text-xs px-2 py-0.5 rounded-full">${clean}</span>`;
+                                }).join('')}
                             </div>
                         </div>
 
