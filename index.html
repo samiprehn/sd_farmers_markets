@@ -27,8 +27,8 @@
     <div id="produce-bg"></div>
     <div id="app"></div>
     <script>
-        // openHours: { open, close } in 24h decimal, or array for seasonal:
-        // [{ months: [10,11,12,1,2,3], open, close }, { months: [4..9], open, close }]
+        // openHours is { open, close } in 24h decimal, OR an array of
+        // [{ months: [...], open, close }] when hours vary seasonally.
         const WINTER = [10,11,12,1,2,3];
         const SUMMER = [4,5,6,7,8,9];
 
@@ -138,25 +138,32 @@
         // Detect whether the browser actually renders an emoji as a color glyph
         // (vs. a tofu box). Draws the emoji in solid black; supported color
         // emojis ignore the fillStyle and paint with their own colors.
-        function isEmojiSupported(emoji) {
-            if (!isEmojiSupported._canvas) {
-                isEmojiSupported._canvas = document.createElement('canvas');
-                isEmojiSupported._canvas.width = 32;
-                isEmojiSupported._canvas.height = 32;
-            }
-            const ctx = isEmojiSupported._canvas.getContext('2d');
-            ctx.clearRect(0, 0, 32, 32);
-            ctx.font = '24px sans-serif';
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = '#000000';
-            ctx.fillText(emoji, 0, 0);
-            const data = ctx.getImageData(0, 0, 32, 32).data;
-            for (let i = 0; i < data.length; i += 4) {
-                if (data[i + 3] === 0) continue;
-                if (data[i] > 5 || data[i + 1] > 5 || data[i + 2] > 5) return true;
-            }
-            return false;
-        }
+        const isEmojiSupported = (() => {
+            const cache = new Map();
+            let canvas, ctx;
+            return (emoji) => {
+                if (cache.has(emoji)) return cache.get(emoji);
+                if (!canvas) {
+                    canvas = document.createElement('canvas');
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    ctx = canvas.getContext('2d');
+                    ctx.font = '24px sans-serif';
+                    ctx.textBaseline = 'top';
+                    ctx.fillStyle = '#000000';
+                }
+                ctx.clearRect(0, 0, 32, 32);
+                ctx.fillText(emoji, 0, 0);
+                const data = ctx.getImageData(0, 0, 32, 32).data;
+                let supported = false;
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] === 0) continue;
+                    if (data[i] > 5 || data[i + 1] > 5 || data[i + 2] > 5) { supported = true; break; }
+                }
+                cache.set(emoji, supported);
+                return supported;
+            };
+        })();
 
         // Background sprinkle: pull only the emojis from this month's IN_SEASON list,
         // dedupe, drop any that don't render as color, and scatter them randomly
@@ -237,7 +244,7 @@
         }
 
         let selectedTab = 'today';
-        const weatherCache = {}; // zip → hourly data
+        const weatherCache = {};
 
         async function fetchWeather() {
             const zips = [...new Set(MARKETS.map(m => m.zip))];
@@ -247,81 +254,50 @@
                 try {
                     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&hourly=apparent_temperature,weather_code,uv_index&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=7`);
                     const data = await res.json();
-                    weatherCache[zip] = data.hourly;
-                } catch (e) {}
+                    const timeIdx = new Map(data.hourly.time.map((t, i) => [t, i]));
+                    weatherCache[zip] = { ...data.hourly, timeIdx };
+                } catch {}
             }));
             render();
         }
 
-        function getApparentTemp(market, date) {
+        function getWeatherAt(market, date) {
             const hourly = weatherCache[market.zip];
-            if (!hourly) return null;
             const oh = getOpenHours(market, date);
-            if (!oh) return null;
+            if (!hourly || !oh) return null;
             const midHour = Math.round((oh.open + oh.close) / 2);
             const y = date.getFullYear();
             const mo = String(date.getMonth() + 1).padStart(2, '0');
             const d = String(date.getDate()).padStart(2, '0');
             const h = String(midHour).padStart(2, '0');
-            const timeStr = `${y}-${mo}-${d}T${h}:00`;
-            const idx = hourly.time.indexOf(timeStr);
-            if (idx === -1) return null;
-            return Math.round(hourly.apparent_temperature[idx]);
+            const idx = hourly.timeIdx.get(`${y}-${mo}-${d}T${h}:00`);
+            if (idx === undefined) return null;
+            return {
+                feelsLike: Math.round(hourly.apparent_temperature[idx]),
+                code: hourly.weather_code[idx],
+                uv: Math.round(hourly.uv_index[idx]),
+            };
         }
 
+        const WEATHER_EMOJI_BANDS = [
+            [0, '☀️'], [1, '🌤️'], [2, '⛅'], [3, '☁️'],
+            [48, '🌫️'], [55, '🌦️'], [65, '🌧️'], [77, '🌨️'],
+            [80, '🌦️'], [82, '🌧️'], [86, '🌨️'],
+        ];
         function weatherCodeEmoji(code) {
-            if (code === 0)                    return '☀️';
-            if (code === 1)                    return '🌤️';
-            if (code === 2)                    return '⛅';
-            if (code === 3)                    return '☁️';
-            if (code <= 48)                    return '🌫️'; // fog
-            if (code <= 55)                    return '🌦️'; // drizzle
-            if (code <= 65)                    return '🌧️'; // rain
-            if (code <= 77)                    return '🌨️'; // snow
-            if (code === 80)                   return '🌦️'; // light showers
-            if (code <= 82)                    return '🌧️'; // showers
-            if (code <= 86)                    return '🌨️'; // snow showers
-            return '⛈️';                              // thunderstorm
+            const band = WEATHER_EMOJI_BANDS.find(([max]) => code <= max);
+            return band ? band[1] : '⛈️';
         }
 
-        function getUVIndex(market, date) {
-            const hourly = weatherCache[market.zip];
-            if (!hourly) return null;
-            const oh = getOpenHours(market, date);
-            if (!oh) return null;
-            const midHour = Math.round((oh.open + oh.close) / 2);
-            const y = date.getFullYear();
-            const mo = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            const h = String(midHour).padStart(2, '0');
-            const timeStr = `${y}-${mo}-${d}T${h}:00`;
-            const idx = hourly.time.indexOf(timeStr);
-            if (idx === -1) return null;
-            return Math.round(hourly.uv_index[idx]);
-        }
-
+        const UV_BANDS = [
+            [2,  { label: 'Low',       color: '#16a34a' }],
+            [5,  { label: 'Moderate',  color: '#ca8a04' }],
+            [7,  { label: 'High',      color: '#ea580c' }],
+            [10, { label: 'Very High', color: '#dc2626' }],
+        ];
         function uvLabel(uv) {
-            if (uv <= 2)  return { label: 'Low',       color: '#16a34a' };
-            if (uv <= 5)  return { label: 'Moderate',  color: '#ca8a04' };
-            if (uv <= 7)  return { label: 'High',      color: '#ea580c' };
-            if (uv <= 10) return { label: 'Very High', color: '#dc2626' };
-            return             { label: 'Extreme',    color: '#9333ea' };
-        }
-
-        function getWeatherCode(market, date) {
-            const hourly = weatherCache[market.zip];
-            if (!hourly) return null;
-            const oh = getOpenHours(market, date);
-            if (!oh) return null;
-            const midHour = Math.round((oh.open + oh.close) / 2);
-            const y = date.getFullYear();
-            const mo = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            const h = String(midHour).padStart(2, '0');
-            const timeStr = `${y}-${mo}-${d}T${h}:00`;
-            const idx = hourly.time.indexOf(timeStr);
-            if (idx === -1) return null;
-            return hourly.weather_code[idx];
+            const band = UV_BANDS.find(([max]) => uv <= max);
+            return band ? band[1] : { label: 'Extreme', color: '#9333ea' };
         }
 
         function formatHour(h) {
@@ -348,11 +324,9 @@
             const open = showOpenNow && isOpenNow(m);
             const oh = getOpenHours(m, date);
             const displayHours = (Array.isArray(m.openHours) && oh) ? formatHours(oh) : m.hours;
-            const feelsLike = getApparentTemp(m, date);
-            const wCode = getWeatherCode(m, date);
-            const wEmoji = wCode !== null ? weatherCodeEmoji(wCode) : '';
-            const uv = getUVIndex(m, date);
-            const uvInfo = uv !== null ? uvLabel(uv) : null;
+            const weather = getWeatherAt(m, date);
+            const wEmoji = weather ? weatherCodeEmoji(weather.code) : '';
+            const uvInfo = weather ? uvLabel(weather.uv) : null;
             return `
                 <div class="bg-white rounded-xl shadow-md p-4 mb-3 ${open ? 'ring-2 ring-green-500' : ''}">
                     <div class="flex justify-between items-start">
@@ -367,14 +341,14 @@
                     </div>
                     <div class="flex justify-between items-baseline mt-1">
                         <div class="text-green-700 text-sm font-medium">${m.neighborhood}</div>
-                        ${feelsLike !== null ? `<div class="text-gray-400 text-xs shrink-0 ml-2">Feels like ${feelsLike}°F</div>` : ''}
+                        ${weather ? `<div class="text-gray-400 text-xs shrink-0 ml-2">Feels like ${weather.feelsLike}°F</div>` : ''}
                     </div>
                     <div class="flex justify-between items-center mt-1">
                         <a href="${mapsUrl(m.address)}" target="_blank" rel="noopener noreferrer"
                            class="text-sm text-blue-600 hover:underline">${m.address}</a>
                         <div class="flex items-center gap-1.5 shrink-0 ml-2">
                             ${wEmoji ? `<span class="text-lg">${wEmoji}</span>` : ''}
-                            ${uvInfo ? `<span class="text-xs font-medium" style="color:${uvInfo.color}">UV ${uv}</span>` : ''}
+                            ${uvInfo ? `<span class="text-xs font-medium" style="color:${uvInfo.color}">UV ${weather.uv}</span>` : ''}
                         </div>
                     </div>
                     ${m.parking ? `<div class="text-xs text-gray-400 mt-1">🅿️ ${m.parking}</div>` : ''}
@@ -420,14 +394,14 @@
             const satDate = nextSaturday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const sunDate = nextSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-            let displayDay, displayDate;
-            if (selectedTab === 'today') { displayDay = todayDay; displayDate = today; }
-            else if (selectedTab === 'saturday') { displayDay = 6; displayDate = nextSaturday; }
-            else { displayDay = 0; displayDate = nextSunday; }
-
+            const TABS = {
+                today:    { day: todayDay, date: today },
+                saturday: { day: 6,        date: nextSaturday },
+                sunday:   { day: 0,        date: nextSunday },
+            };
+            const { day: displayDay, date: displayDate } = TABS[selectedTab];
             const showOpenNow = selectedTab === 'today';
 
-            // Border logic: middle tab gets border-l border-r, last visible tab gets border-l
             const satBorder = !isSunday ? 'border-l border-r border-gray-200' : 'border-l border-gray-200';
 
             document.getElementById('app').innerHTML = `
