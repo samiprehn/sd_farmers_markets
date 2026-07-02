@@ -65,7 +65,7 @@
 
             // Saturday (6)
             { name: 'Little Italy Mercato', day: 6, hours: '8am–2pm', address: 'W Date St', neighborhood: 'Little Italy', region: 'Central', zip: '92101', openHours: { open: 8, close: 14 }, dogFriendly: true, parking: 'Paid garages nearby; street fills very fast' },
-            { name: 'City Heights', day: 6, hours: '9am–1pm', address: 'Wightman St (btw Fairmount & 43rd)', neighborhood: 'City Heights', region: 'Central', zip: '92125', openHours: { open: 9, close: 13 } },
+            { name: 'City Heights', day: 6, hours: '9am–1pm', address: 'Wightman St (btw Fairmount & 43rd)', neighborhood: 'City Heights', region: 'Central', zip: '92105', openHours: { open: 9, close: 13 } },
             { name: 'Point Loma', day: 6, hours: '10am–1pm', address: '2306 Cushing Rd, Liberty Station', neighborhood: 'Point Loma', region: 'Central', zip: '92107', openHours: { open: 10, close: 13 }, dogFriendly: true, parking: 'Ample free parking at Liberty Station' },
             { name: 'Poway', day: 6, hours: '8am–1pm', address: '14134 Midland Rd', neighborhood: 'Poway', region: 'North County', zip: '92074', openHours: { open: 8, close: 13 } },
             { name: 'Rancho Peñasquitos', day: 6, hours: '9am–1pm', address: '9400 Fairgrove Lane', neighborhood: 'Rancho Peñasquitos', region: 'North County', zip: '92129', openHours: { open: 9, close: 13 } },
@@ -105,7 +105,7 @@
             '92128': [32.999, -117.061], // Rancho Bernardo
             '91932': [32.583, -117.113], // Imperial Beach
             '92004': [33.256, -116.375], // Borrego Springs
-            '92125': [32.810, -117.094], // City Heights (Tierrasanta area)
+            '92105': [32.7420, -117.0996], // City Heights
             '92074': [32.963, -117.036], // Poway
             '92129': [32.952, -117.115], // Rancho Peñasquitos
             '92014': [32.959, -117.265], // Del Mar
@@ -252,7 +252,7 @@
                 const coords = ZIP_COORDS[zip];
                 if (!coords) return;
                 try {
-                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&hourly=apparent_temperature,weather_code,uv_index&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=7`);
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&hourly=apparent_temperature,weather_code,uv_index&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=8`);
                     const data = await res.json();
                     const timeIdx = new Map(data.hourly.time.map((t, i) => [t, i]));
                     weatherCache[zip] = { ...data.hourly, timeIdx };
